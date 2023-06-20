@@ -38,6 +38,10 @@ download_test:
 		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
 	fi )
 
+	( if [ ! -f ca-certificates.crt ]; then \
+		wget -t5 --timeout=20 --no-check-certificate -O ca-certificates.crt https://curl.se/ca/cacert.pem; \
+	fi )
+
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
 		tar -xf $(SRC_NAME).tar.gz; \
@@ -77,6 +81,7 @@ romfs:
 	cp -fP $(DESTDIR)/lib/libssl.so* $(ROMFSDIR)/lib
 	cp -fP $(DESTDIR)/lib/libcrypto.so* $(ROMFSDIR)/lib
 	$(ROMFSINST) /etc_ro/openssl.cnf
+	$(ROMFSINST) /etc_ro/ca-certificates.crt
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE),y)
 	$(ROMFSINST) $(SRC_NAME)/apps/openssl /usr/bin/openssl
 endif
